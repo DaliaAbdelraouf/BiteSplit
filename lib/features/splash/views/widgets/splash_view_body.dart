@@ -26,7 +26,7 @@ class _SplashViewBodyState extends State<SplashViewBody> {
                   TypewriterAnimatedText(
                     'Bite Split',
                     textStyle: const TextStyle(
-                      fontSize: 35,
+                      fontSize: 30,
                       fontWeight: FontWeight.bold,
                     ),
                     speed: const Duration(milliseconds: 100),

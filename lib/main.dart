@@ -1,3 +1,4 @@
+import 'package:bitesplit/features/bill_split/views/bill_split_view.dart';
 import 'package:bitesplit/features/home/views/home_view.dart';
 import 'package:bitesplit/features/splash/views/splash_view.dart';
 import 'package:flutter/material.dart';
@@ -18,6 +19,7 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255)),
       routes: {
         SplashView.id: (context) => const SplashView(),
+         BillSplitView.id: (context) => const BillSplitView(),
         HomeView.id: (context) => const HomeView(),
       },
       initialRoute: SplashView.id,
