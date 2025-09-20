@@ -1,3 +1,4 @@
+import 'package:bitesplit/features/bill_split/views/bill_split_view.dart';
 import 'package:flutter/material.dart';
 
 class HomeViewBody extends StatelessWidget {
@@ -65,11 +66,14 @@ class HomeViewBody extends StatelessWidget {
                     children: [
                       Image.asset(
                         'assets/images/Icon2.png',
-                        width: 50,
-                        height: 50
+                        width: 70,
+                        height: 70
                         ,
                       ),
                       Text("Add your friends names",
+                       style: TextStyle(
+                          fontWeight: FontWeight.w600,
+              ),
                   
                       )
                     
@@ -77,19 +81,32 @@ class HomeViewBody extends StatelessWidget {
                   ),
                    Row(
                     children: [
-                      // Image.asset(
-                      //   ''
-                      // ),
-                      Text("Enter Items,prices and taxes")
+                    Image.asset(
+                        'assets/images/Icon3.png',
+                        width: 70,
+                        height: 70
+                        ,
+                      ),
+                      Text("Enter Items prices and taxes",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+              ),)
                     
                     ],
                   ),
                    Row(
                     children: [
-                      // Image.asset(
-                      //   ''
-                      // ),
-                      Text("Get fair split calculation")
+                     Image.asset(
+                        'assets/images/Icon4.png',
+                        width: 70,
+                        height: 70
+                        ,
+                      ),
+                      Text("Get fair split calculation",
+                      style: TextStyle(
+                          fontWeight: FontWeight.w600,
+              ),
+                      )
                     
                     ],
                   ),
@@ -99,7 +116,7 @@ class HomeViewBody extends StatelessWidget {
             SizedBox(height: 16,),
             MaterialButton(
               onPressed: () {
-                  //  Navigator.pushNamed(context, HomeView.id);
+                   Navigator.pushNamed(context, BillSplitView.id);
               },
                color: Color(0xff2b7fff),
               minWidth: 320,
