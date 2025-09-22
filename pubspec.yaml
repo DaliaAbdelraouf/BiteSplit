@@ -67,6 +67,7 @@ flutter:
     - assets/images/Icon3.png
     - assets/images/Icon4.png
     - assets/images/Logo.png
+    - assets/images/splitDecor.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images
