@@ -19,8 +19,9 @@ class MyApp extends StatelessWidget {
           scaffoldBackgroundColor: const Color.fromARGB(255, 255, 255, 255)),
       routes: {
         SplashView.id: (context) => const SplashView(),
-         BillSplitView.id: (context) => const BillSplitView(),
+        BillSplitView.id: (context) => const BillSplitView(),
         HomeView.id: (context) => const HomeView(),
+ 
       },
       initialRoute: SplashView.id,
     );

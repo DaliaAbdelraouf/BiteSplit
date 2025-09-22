@@ -1,6 +1,6 @@
 import 'dart:developer';
-
 import 'package:bitesplit/features/splash/views/widgets/person_widget.dart';
+import 'package:bitesplit/features/summary_page/views/summary_view.dart';
 import 'package:bitesplit/models/bill_item.dart';
 import 'package:bitesplit/models/person.dart';
 import 'package:flutter/material.dart';
@@ -20,8 +20,9 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
   final TextEditingController _tipPriceController = TextEditingController();
    List<Person> _people = [];
    List<BillItem> _billItems = [];
-   double? taxValue;
-   double? tipValue;
+  double taxValue = 0.0;
+  double tipValue = 0.0;
+
 
   void _addPerson() {
     if (_personNameController.text.isNotEmpty) {
@@ -62,6 +63,7 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
 
         });
       }
+
     }
   }
   void _removeItem(BillItem item) {
@@ -71,6 +73,7 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
 }
   @override
   Widget build(BuildContext context) {
+   // You can remove this line later
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Colors.transparent, 
@@ -134,7 +137,7 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                                    focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8),
                                       borderSide: BorderSide(
-                                        color: Color(0xff2b7fff), // Blue focus border
+                                        color: Color(0xff2b7fff), 
                                         width: 2,
                                       ),
                                     ),
@@ -176,8 +179,8 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                     ),
                   ),
                 ),
-                SizedBox(height: 20,), // Add some space between the cards
-                Card(
+                SizedBox(height: 20,), 
+        Card(
           elevation: 5,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
@@ -214,7 +217,7 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                           focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8),
                                       borderSide: BorderSide(
-                                        color: Color(0xff2b7fff), // Blue focus border
+                                        color: Color(0xff2b7fff), 
                                         width: 2,
                                       ),
                                     ),
@@ -235,7 +238,7 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                           focusedBorder: OutlineInputBorder(
                                       borderRadius: BorderRadius.circular(8),
                                       borderSide: BorderSide(
-                                        color: Color(0xff2b7fff), // Blue focus border
+                                        color: Color(0xff2b7fff), 
                                         width: 2,
                                       ),
                                     ),
@@ -386,7 +389,7 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                         keyboardType: TextInputType.numberWithOptions(decimal: true),
                             onChanged: (value) {
                               setState(() {
-                                taxValue = double.tryParse(value);
+                                 taxValue = double.tryParse(value) ?? 0.0;
                               });
                             },
                       ),
@@ -413,9 +416,9 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                 keyboardType: TextInputType.numberWithOptions(decimal: true),
                     onChanged: (value) {
                       setState(() {
-                        tipValue = double.tryParse(value);
-                        // log("${taxValue}");
-                        // log("${tipValue}");
+                        tipValue = double.tryParse(value) ?? 0.0;
+                        log("${taxValue}");
+                        log("${tipValue}");
                       });
                       
                     },
@@ -430,12 +433,46 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                     ),
                   ),
                 ),
-             
                Padding(
                  padding: const EdgeInsets.only(top: 20,bottom: 20),
                  child: MaterialButton(
-                  onPressed: () {
-                      //  Navigator.pushNamed(context, BillSplitView.id);
+                  onPressed: () { 
+                 if (_people.isEmpty || _billItems.isEmpty) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                            'Please enter all required data',
+                            style: TextStyle(fontWeight: FontWeight.w400),
+                          ),
+                          backgroundColor: Color(0xffEF4444),
+                          duration: Duration(seconds: 2),
+                        ),
+                      );
+                    } else if (!_billItems.every((item) => item.assignedTo.isNotEmpty)) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text(
+                                'Please assign every item to at least one person',
+                                style: TextStyle(fontWeight: FontWeight.w400),
+                              ),
+                              backgroundColor: Color(0xffEF4444),
+                              duration: Duration(seconds: 2),
+                            ),
+                          );
+                        }else {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => SummaryView(
+                            billItems: _billItems,
+                            taxValue: taxValue,
+                            tipValue: tipValue,
+                          ),
+                        ),
+                      );
+                    }
+
+                                        
                   },
                    color: Color(0xff2b7fff),
                   minWidth: 320,
@@ -444,7 +481,7 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                     borderRadius: BorderRadius.circular(12),
                   ),
                   child: Text(
-                    'Start New Order',
+                    'View Summary',
                     style: TextStyle(
                       color: Colors.white,
                       fontSize: 18,
