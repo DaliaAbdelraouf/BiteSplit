@@ -80,7 +80,9 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
         elevation: 0, // No shadow
         centerTitle: true,
         title: Image.asset(
-                  'assets/images/Logo.png', 
+                    Theme.of(context).brightness == Brightness.dark
+                        ? 'assets/images/logo_dark.png'
+                        : 'assets/images/Logo.png',
                   width: 120,
                   height: 120,
                 ),
@@ -106,11 +108,15 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                     side: BorderSide(
-                      color: Color.fromARGB(255, 233, 233, 233), 
+                       color: Theme.of(context).brightness == Brightness.dark
+                      ? Theme.of(context).colorScheme.tertiaryContainer
+                      : Colors.white,
                       width: 1.5,
                     ),
                   ),
-                  color: Colors.white,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Theme.of(context).colorScheme.tertiaryContainer
+                      : Colors.white,
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
@@ -118,11 +124,15 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.people_outlined, color: Colors.blueGrey[700]),
+                            Icon(Icons.people_outlined, 
+                             color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.blueGrey[700],
+                            ),
                             const SizedBox(width: 10),
                              Text(
                               "Add People (${_people.length})",
-                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold,),
                             ),
                           ],
                         ),
@@ -185,11 +195,15 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(12),
             side: BorderSide(
-              color: Color.fromARGB(255, 233, 233, 233),
+             color: Theme.of(context).brightness == Brightness.dark
+                      ? Theme.of(context).colorScheme.tertiaryContainer
+                      : Colors.white,
               width: 1.5,
             ),
           ),
-          color: Colors.white,
+          color: Theme.of(context).brightness == Brightness.dark
+                      ? Theme.of(context).colorScheme.tertiaryContainer
+                      : Colors.white,
           child: Padding(
             padding: const EdgeInsets.all(20.0),
             child: Column(
@@ -197,7 +211,11 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
               children: [
                 Row(
                   children: [
-                    Icon(Icons.attach_money_outlined, color: Colors.blueGrey[700]),
+                    Icon(Icons.attach_money_outlined, 
+                   color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.blueGrey[700],
+                    ),
                     const SizedBox(width: 10),
                      Text(
                       'Items (${_billItems.length})',
@@ -275,12 +293,12 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         ListTile(
-                          title: Text(item.name,style: TextStyle(fontWeight: FontWeight.w400),),
+                          title: Text(item.name,style: TextStyle(fontWeight: FontWeight.w400,color: Colors.black),),
                           trailing: Row(
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Text('\$${item.price.toStringAsFixed(2)}',
-                                style: TextStyle(fontSize: 14),
+                                style: TextStyle(fontSize: 14,color: Colors.black),
                               ),
                               SizedBox(width: 8),
                               IconButton(
@@ -344,11 +362,15 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12),
                     side: BorderSide(
-                      color: Color.fromARGB(255, 233, 233, 233), 
+                     color: Theme.of(context).brightness == Brightness.dark
+                      ? Theme.of(context).colorScheme.tertiaryContainer
+                      : Colors.white,
                       width: 1.5,
                     ),
                   ),
-                  color: Colors.white,
+                  color: Theme.of(context).brightness == Brightness.dark
+                      ? Theme.of(context).colorScheme.tertiaryContainer
+                      : Colors.white,
                   child: Padding(
                     padding: const EdgeInsets.all(20.0),
                     child: Column(
@@ -356,7 +378,11 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                       children: [
                         Row(
                           children: [
-                            Icon(Icons.people_outlined, color: Colors.blueGrey[700]),
+                            Icon(Icons.people_outlined, 
+                       color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Colors.blueGrey[700],
+                            ),
                             const SizedBox(width: 10),
                              Text(
                               "Tax & Tip",

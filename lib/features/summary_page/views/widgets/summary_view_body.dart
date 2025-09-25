@@ -78,7 +78,7 @@ class _SummaryViewBodyState extends State<SummaryViewBody> {
                             "Total Bill",
                             textAlign: TextAlign.center,
                             style: TextStyle(
-                                fontSize: 15, fontWeight: FontWeight.w400),
+                                fontSize: 15, fontWeight: FontWeight.w400,color: Colors.grey),
                           ),
                           Text(
                             "\$ ${grandTotal.toStringAsFixed(2)}",
