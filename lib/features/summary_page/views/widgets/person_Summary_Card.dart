@@ -42,6 +42,7 @@ class PersonCard extends StatelessWidget {
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
                       fontSize: 18,
+                      color: Colors.black
                     ),
                   ),
                   Container(
@@ -55,6 +56,7 @@ class PersonCard extends StatelessWidget {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 18,
+                        color: Colors.black
                       ),
                     ),
                   ),
@@ -70,16 +72,16 @@ class PersonCard extends StatelessWidget {
                       item['splitCount'] > 1
                           ? "${item['name']} (split ${item['splitCount']} ways)"
                           : item['name'],
-                      style: TextStyle(fontSize: 15),
+                      style: TextStyle(fontSize: 15,color: Colors.black),
                     ),
                     Text(
                       "\$${item['splitPrice'].toStringAsFixed(2)}",
-                      style: TextStyle(fontSize: 15),
+                      style: TextStyle(fontSize: 15,color: Colors.black),
                     ),
                   ],
                 ),
               )),
-              Divider(),
+              Divider(color: Colors.grey[300],),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
