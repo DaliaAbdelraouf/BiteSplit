@@ -10,7 +10,7 @@ class HomeViewBody extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context); // current theme
-    final colors = theme.colorScheme;
+    // final colors = theme.colorScheme;
     return Scaffold(
       body: Container(
         width: double.infinity,
