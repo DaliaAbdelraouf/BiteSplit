@@ -7,6 +7,7 @@ class PersonCard extends StatelessWidget {
   final double taxShare;
   final double tipShare;
   final List<Map<String, dynamic>> items;
+  final bool markedAsPaid;
 
   const PersonCard({
     super.key,
@@ -16,6 +17,7 @@ class PersonCard extends StatelessWidget {
     required this.taxShare,
     required this.tipShare,
     required this.items,
+    required this.markedAsPaid
   });
 
   @override
@@ -26,8 +28,12 @@ class PersonCard extends StatelessWidget {
         elevation: 3,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(12),
+          side: BorderSide(
+            color: markedAsPaid ? Color.fromARGB(255, 187, 232, 187) : Colors.transparent, // Green border if paid
+            width: 1.5,
+          ),
         ),
-        color: Colors.white,
+        color: markedAsPaid ? Color(0xffe6f9ed) : Colors.white, 
         child: Container(
           width: 320,
           padding: const EdgeInsets.all(16.0),

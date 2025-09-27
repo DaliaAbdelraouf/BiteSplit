@@ -1,5 +1,5 @@
 import 'dart:developer';
-import 'package:bitesplit/features/splash/views/widgets/person_widget.dart';
+import 'package:bitesplit/features/bill_split/views/widgets/person_widget.dart';
 import 'package:bitesplit/features/summary_page/views/summary_view.dart';
 import 'package:bitesplit/models/bill_item.dart';
 import 'package:bitesplit/models/person.dart';
@@ -18,8 +18,8 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
   final TextEditingController _itemPriceController = TextEditingController(); 
   final TextEditingController _taxController = TextEditingController();
   final TextEditingController _tipPriceController = TextEditingController();
-   List<Person> _people = [];
-   List<BillItem> _billItems = [];
+   final List<Person> _people = [];
+   final List<BillItem> _billItems = [];
   double taxValue = 0.0;
   double tipValue = 0.0;
 
@@ -89,7 +89,7 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          child: Container(
+          child: SizedBox(
             width: double.infinity,
             child: Column(
               children: [
@@ -443,8 +443,8 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                     onChanged: (value) {
                       setState(() {
                         tipValue = double.tryParse(value) ?? 0.0;
-                        log("${taxValue}");
-                        log("${tipValue}");
+                        log("$taxValue");
+                        log("$tipValue");
                       });
                       
                     },
