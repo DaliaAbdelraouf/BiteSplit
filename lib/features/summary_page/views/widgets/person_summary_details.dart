@@ -22,7 +22,7 @@ class BillSummaryCalculator {
   static double getTotalItemsSum(List<BillItem> billItems) {
     double sum = 0;
     for (var item in billItems) {
-      sum += item.price;
+      sum += item.price * (item.count ?? 1); ;
     }
     return sum;
   }
@@ -48,13 +48,14 @@ class BillSummaryCalculator {
       List<Map<String, dynamic>> itemDetails = [];
       for (var item in assignedItems) {
         int splitCount = item.assignedTo.length;
-        double splitPrice = item.price / splitCount;
+        double splitPrice = (item.price * (item.count ?? 1)) / splitCount;
         personSubtotal += splitPrice;
-        itemDetails.add({
-          'name': item.name,
-          'splitCount': splitCount,
-          'splitPrice': splitPrice,
-        });
+      itemDetails.add({
+            'name': item.name,
+            'splitCount': splitCount,
+            'splitPrice': splitPrice,
+            'count': item.count ?? 1,
+          });
       }
 
       double taxShare = totalItemsSum == 0 ? 0 : personSubtotal / totalItemsSum * taxValue;

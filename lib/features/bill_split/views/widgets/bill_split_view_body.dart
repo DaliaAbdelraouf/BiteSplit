@@ -1,12 +1,14 @@
 import 'dart:developer';
-import 'package:bitesplit/features/bill_split/views/widgets/person_widget.dart';
 import 'package:bitesplit/features/summary_page/views/summary_view.dart';
 import 'package:bitesplit/models/bill_item.dart';
+import 'package:bitesplit/models/people_group.dart';
 import 'package:bitesplit/models/person.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 
 class BillSplitViewBody extends StatefulWidget {
-  const BillSplitViewBody({super.key});
+  final List<String>? initialPeople;
+  const BillSplitViewBody({super.key, this.initialPeople});
 
   @override
   State<BillSplitViewBody> createState() => _BillSplitViewBodyState();
@@ -18,10 +20,13 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
   final TextEditingController _itemPriceController = TextEditingController(); 
   final TextEditingController _taxController = TextEditingController();
   final TextEditingController _tipPriceController = TextEditingController();
-   final List<Person> _people = [];
+   late List<Person> _people;
    final List<BillItem> _billItems = [];
   double taxValue = 0.0;
   double tipValue = 0.0;
+ 
+ bool _saveAsGroup = false;
+final TextEditingController _groupNameController = TextEditingController();
 
 
   void _addPerson() {
@@ -40,7 +45,7 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
     setState(() {
       _people.removeWhere((person) => person.name == personName);
       
-      // Remove person from all bill items
+   
       for (BillItem item in _billItems) {
         item.assignedTo.remove(personName);
       }
@@ -57,20 +62,52 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
             name: _itemNameController.text,
             price: price,
             assignedTo: [],
+            count: 1
           ));
           _itemNameController.clear();
           _itemPriceController.clear();
-
+         logItems();
+        
         });
       }
 
     }
   }
+  Future<void> saveGroup(String name, List<String> people) async {
+  final box = Hive.box<PeopleGroup>('groups');
+  final group = PeopleGroup(name: name, people: people);
+  await box.add(group);
+}
+void logGroups() async {
+  final box = Hive.box<PeopleGroup>('groups');
+  for (var group in box.values) {
+    log('Group: ${group.name}, People: ${group.people.join(", ")}');
+  }
+}
+
   void _removeItem(BillItem item) {
   setState(() {
     _billItems.remove(item);
   });
 }
+
+  void logItems() {
+    for (var item in _billItems) {
+      log('Item: ${item.name}, Price: ${item.price}, Count: ${item.count}, Assigned to: ${item.assignedTo.join(", ")}');
+    }
+  }
+  @override
+  void initState() {
+    super.initState();
+    _people = widget.initialPeople != null
+        ? widget.initialPeople!
+            .map((name) => Person(name: name, id: DateTime.now().millisecondsSinceEpoch.toString()))
+            .toList()
+        : [];
+
+      
+  }
+
   @override
   Widget build(BuildContext context) {
    // You can remove this line later
@@ -177,14 +214,65 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                         if (_people.isNotEmpty) ...[
                           const SizedBox(height: 16),
                           Wrap(
+                            spacing: 8,
                             children: _people.map((person) {
-                              return PersonWidget(
-                                name: person.name,
-                                onDelete: () => _removePerson(person.name),
+                              return Chip(
+                                label: Text(
+                                  person.name,
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                backgroundColor: Color(0xffededed),
+                                shape: StadiumBorder(),
+                                deleteIcon: Icon(Icons.close, size: 18),
+                                deleteIconColor: Colors.black,
+                                onDeleted: () {
+                                  setState(() {
+                                    _people.remove(person);
+                                  });
+                                },
+                                // padding: EdgeInsets.symmetric(horizontal: 12, vertical: 2),
                               );
                             }).toList(),
                           ),
                         ],
+                        Row(
+                          children: [
+                            Switch(
+                              value: _saveAsGroup,
+                              onChanged: (val) {
+                                setState(() {
+                                  _saveAsGroup = val;
+                                });
+                              },
+                              activeColor: Color(0xff2b7fff),
+                            ),
+                            Text(
+                              "Save as Group",
+                              style: TextStyle(
+                                fontWeight: FontWeight.w500,
+                                fontSize: 15,
+                              ),
+                            ),
+                            if (_saveAsGroup) ...[
+                              SizedBox(width: 12),
+                              Expanded(
+                                child: TextField(
+                                  controller: _groupNameController,
+                                  decoration: InputDecoration(
+                                    hintText: 'Group Name',
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(8),
+                                    ),
+                                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        ),
                       ],
                     ),
                   ),
@@ -294,22 +382,45 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                       children: [
                         ListTile(
                           title: Text(item.name,style: TextStyle(fontWeight: FontWeight.w400,color: Colors.black),),
+                          
                           trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text('\$${item.price.toStringAsFixed(2)}',
-                                style: TextStyle(fontSize: 14,color: Colors.black),
-                              ),
-                              SizedBox(width: 8),
-                              IconButton(
-                                iconSize: 19,
-                                icon: Icon(Icons.remove, color: Colors.redAccent),
-                                onPressed: () => _removeItem(item),
-                                tooltip: 'Delete item',
-                              ),
-                            ],
-                          ),
-                          contentPadding: EdgeInsets.only(right: 0, left: 0), 
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+
+                         IconButton(
+                          iconSize: 19,
+                          icon: Icon(Icons.remove, color: Colors.redAccent),
+                          onPressed: () {
+                            setState(() {
+                              if (item.count > 1) {
+                                item.count -= 1;
+                              } else {
+                                _billItems.remove(item);
+                              }
+                            });
+                          },
+                          tooltip: 'Remove item',
+                        ),
+                        
+                        Text(
+                          'x${item.count}',
+                          style: TextStyle(fontSize: 14, color: Colors.black),
+                        ),
+                        SizedBox(width: 8),
+                       IconButton(
+                          icon: Icon(Icons.add, color: Colors.green),
+                          tooltip: 'Duplicate item',
+                          onPressed: () {
+                            setState(() {
+                              item.count += 1;
+                              logItems();
+                            });
+                          },
+                        ),
+                      ],
+                    ),
+                    
+                    contentPadding: EdgeInsets.only(right: 0, left: 0), 
                         ),
                         if (_people.isNotEmpty) ...[
                           Wrap(
@@ -462,7 +573,7 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                Padding(
                  padding: const EdgeInsets.only(top: 20,bottom: 20),
                  child: MaterialButton(
-                  onPressed: () { 
+                  onPressed: () async {
                  if (_people.isEmpty || _billItems.isEmpty) {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -485,21 +596,31 @@ class _BillSplitViewBodyState extends State<BillSplitViewBody> {
                               duration: Duration(seconds: 2),
                             ),
                           );
-                        }else {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => SummaryView(
-                            billItems: _billItems,
-                            taxValue: taxValue,
-                            tipValue: tipValue,
-                          ),
-                        ),
-                      );
-                    }
-
-                                        
-                  },
+                        } else {
+                          // Save group if toggled and valid
+                          if (_saveAsGroup && _groupNameController.text.isNotEmpty && _people.isNotEmpty) {
+                            await saveGroup(
+                              _groupNameController.text,
+                              _people.map((p) => p.name).toList(),
+                            );
+                             logGroups();
+                            _groupNameController.clear();
+                            setState(() {
+                              _saveAsGroup = false;
+                            });
+                          }
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SummaryView(
+                                billItems: _billItems,
+                                taxValue: taxValue,
+                                tipValue: tipValue,
+                              ),
+                            ),
+                          );
+                        }
+                      },
                    color: Color(0xff2b7fff),
                   minWidth: 320,
                   height: 50,

@@ -3,10 +3,17 @@ import 'package:bitesplit/app/theme_toggle_button.dart';
 import 'package:bitesplit/features/bill_split/views/bill_split_view.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:hive/hive.dart';
+import 'package:bitesplit/models/people_group.dart';
 
-class HomeViewBody extends StatelessWidget {
+class HomeViewBody extends StatefulWidget {
   const HomeViewBody({super.key});
 
+  @override
+  State<HomeViewBody> createState() => _HomeViewBodyState();
+}
+
+class _HomeViewBodyState extends State<HomeViewBody> {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context); // current theme
@@ -135,7 +142,14 @@ class HomeViewBody extends StatelessWidget {
                   SizedBox(height: 16,),
                   MaterialButton(
                     onPressed: () {
-                         Navigator.pushNamed(context, BillSplitView.id);
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => BillSplitView(
+                              initialPeople: [], 
+                            ),
+                          ),
+                        );
                     },
                      color: Color(0xff2b7fff),
                     minWidth: 320,
@@ -152,10 +166,40 @@ class HomeViewBody extends StatelessWidget {
                       ),
                     ), 
                   ),
+                  SizedBox(height: 20,),
+                   Align(
+                    alignment: Alignment.centerLeft,
+                     child: Padding(
+                       padding: const EdgeInsets.only(left: 20),
+                       child: Text(
+                        "Choose from your saved groups",
+                        style: TextStyle(
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                          letterSpacing: 0.2,
+                          color: Theme.of(context).brightness == Brightness.dark
+                              ? Colors.white
+                              : Color(0xff2b7fff),
+                        ),
+                        textAlign: TextAlign.right,
+                                         ),
+                     ),
+                   ),
+                  SizedBox(height: 20,),
+                   Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+
+                       padding: const EdgeInsets.only(left: 20),
+                      child: PeopleGroupWidget(),
+                    )), 
+                   
+                   
+                   
                 ],
               ),
             ),
-            // Toggle button in top right
+            // Toggle button 
             Positioned(
               top: 40,
               right: 20,
@@ -167,6 +211,119 @@ class HomeViewBody extends StatelessWidget {
           ],
         ),
       ),
+    );
+  }
+}
+
+class PeopleGroupWidget extends StatelessWidget {
+  const PeopleGroupWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return FutureBuilder<Box<PeopleGroup>>(
+      future: Hive.openBox<PeopleGroup>('groups'),
+      builder: (context, snapshot) {
+        if (!snapshot.hasData) return SizedBox();
+        final box = snapshot.data!;
+        if (box.values.isEmpty) return SizedBox();
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 16.0),
+          child: SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
+              children: box.values.map((group) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => BillSplitView(
+                          initialPeople: group.people, 
+                        ),
+                      ),
+                    );
+},
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                    child: Column(
+                      children: [
+                        Stack(
+                          alignment: Alignment.topRight,
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.all(3),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: const LinearGradient(
+                                  colors: [Color.fromARGB(255, 160, 170, 185), Color(0xff66a6ff)],
+                                ),
+                              ),
+                              child: CircleAvatar(
+                                radius: 30,
+                                backgroundColor: Colors.white,
+                                child: Text(
+                                  group.name[0].toUpperCase(),
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontSize: 22,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Positioned(
+                              top: 1,
+                              right: 2,
+                              child: GestureDetector(
+                                onTap: () async {
+                                  final box = Hive.box<PeopleGroup>('groups');
+                                  await box.delete(group.key); // Remove group 
+                                  (context as Element).markNeedsBuild(); 
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: Color(0xffEF4444),
+                                    shape: BoxShape.circle,
+                                  ),
+                                  padding: EdgeInsets.all(4),
+                                  child: Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                    size: 12,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        SizedBox(height: 6),
+                        Text(
+                          group.name,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w600,
+                            fontSize: 14,
+                            color: Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white
+                                : Colors.black,
+                          ),
+                        ),
+                        Text(
+                          "${group.people.length} member${group.people.length == 1 ? '' : 's'}",
+                          style: TextStyle(
+                            fontSize: 12,
+                            color: Theme.of(context).brightness == Brightness.dark
+                                ? Colors.white70
+                                : Colors.black54,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              }).toList(),
+            ),
+          ),
+        );
+      },
     );
   }
 }

@@ -36,7 +36,7 @@ void _showPaidAnimation(BuildContext context) {
   showDialog(
     context: context,
     barrierDismissible: false,
-    barrierColor: Colors.transparent, // <-- No shady overlay
+    barrierColor: Colors.transparent, 
     builder: (context) {
       return Center(
         child: Lottie.asset(
