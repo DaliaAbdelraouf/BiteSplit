@@ -110,8 +110,12 @@ void logGroups() async {
 
   @override
   Widget build(BuildContext context) {
+   final theme = Theme.of(context);
    // You can remove this line later
     return Scaffold(
+      backgroundColor:  theme.brightness == Brightness.dark
+                ? const Color(0xFF1F1F1F)
+                : const Color(0xffeffcf5), 
       appBar: AppBar(
         backgroundColor: Colors.transparent, 
         elevation: 0, // No shadow

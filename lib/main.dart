@@ -1,6 +1,7 @@
 import 'package:bitesplit/app/theme.dart';
 import 'package:bitesplit/features/bill_split/views/bill_split_view.dart';
 import 'package:bitesplit/features/home/views/home_view.dart';
+import 'package:bitesplit/features/home/views/widgets/navbar_control.dart';
 import 'package:bitesplit/features/splash/views/splash_view.dart';
 import 'package:bitesplit/models/people_group.dart';
 import 'package:flutter/material.dart';
@@ -44,6 +45,7 @@ Widget build(BuildContext context) {
         routes: {
           SplashView.id: (context) => const SplashView(),
           BillSplitView.id: (context) => const BillSplitView(),
+          NavbarControl.id: (context) => const NavbarControl(),
           HomeView.id: (context) => const HomeView(),
         },
         initialRoute: SplashView.id,

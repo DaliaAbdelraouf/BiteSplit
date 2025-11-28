@@ -58,8 +58,12 @@ class BillSummaryCalculator {
           });
       }
 
-      double taxShare = totalItemsSum == 0 ? 0 : personSubtotal / totalItemsSum * taxValue;
-      double tipShare = totalItemsSum == 0 ? 0 : personSubtotal / totalItemsSum * tipValue;
+      // double taxShare = totalItemsSum == 0 ? 0 : personSubtotal / totalItemsSum * taxValue;
+      // double tipShare = totalItemsSum == 0 ? 0 : personSubtotal / totalItemsSum * tipValue;
+
+      final int peopleCount = people.length;
+      double taxShare = peopleCount == 0 ? 0 : taxValue / peopleCount;
+      double tipShare = peopleCount == 0 ? 0 : tipValue / peopleCount;
       double personTotal = personSubtotal + taxShare + tipShare;
 
       summaries.add(PersonSummary(
