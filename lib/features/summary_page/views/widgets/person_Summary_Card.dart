@@ -77,7 +77,7 @@ class PersonCard extends StatelessWidget {
                     Text(
                       item['splitCount'] > 1
                           ? "${item['name']} (split ${item['splitCount']} ways)"
-                          : item['name'],
+                          : "${item['name']} (split x1 ways)",
                       style: TextStyle(fontSize: 15,color: Colors.black),
                     ),
                     Text(

@@ -1,5 +1,5 @@
 
-import 'package:bitesplit/features/home/views/home_view.dart';
+import 'package:bitesplit/features/home/views/widgets/navbar_control.dart';
 import 'package:bitesplit/features/splash/views/widgets/splash_view_body.dart';
 import 'package:flutter/material.dart';
 
@@ -29,7 +29,9 @@ class _SplashViewState extends State<SplashView> {
     Future.delayed(
       const Duration(seconds: 3),
       () {
-         Navigator.pushNamed(context, HomeView.id);
+        //  Navigator.pushNamed(context, HomeView.id);
+        Navigator.pushReplacementNamed(context, NavbarControl.id);
+
       },
     );
   }
